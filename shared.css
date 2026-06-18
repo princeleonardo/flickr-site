@@ -1,0 +1,72 @@
+/* Flickr — shared design tokens & components, used by index.html and /blog/* */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); transition: background 0.25s, color 0.25s; -webkit-font-smoothing: antialiased; }
+
+:root {
+  --bg: #f0ece4; --surface: #e6e0d4; --card: #fffdf8;
+  --border: #d8d0c0; --text: #161412; --muted: #6f655a;
+  --accent: #e50914; --accent-dark: #b30710; --gold: #c9a227;
+  --shadow: rgba(20,16,10,0.10);
+}
+.dark {
+  --bg: #0a0a0a; --surface: #161412; --card: #161412;
+  --border: #2a2620; --text: #f0ece4; --muted: #948a7c;
+  --shadow: rgba(0,0,0,0.45);
+}
+
+h1, h2, h3, .brand-word { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-spacing: 0.5px; }
+
+/* ---------- HERO / NAV ---------- */
+.hero { background: #0a0a0a; padding: 1.5rem 1.5rem 1.25rem; position: relative; overflow: hidden; }
+.hero::before {
+  content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 38px, rgba(255,255,255,0.025) 38px 40px);
+  pointer-events: none;
+}
+.hero-top { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; flex-wrap: wrap; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-link { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.brand-logo { width: 42px; height: 42px; flex-shrink: 0; }
+.brand-text h1 { font-size: 30px; font-weight: 400; color: #f0ece4; line-height: 1; }
+.brand-text p { color: #948a7c; font-size: 12px; margin-top: 3px; letter-spacing: 0.3px; }
+.nav-links { display: flex; gap: 18px; align-items: center; position: relative; z-index: 1; }
+.nav-links a { color: #c9bfaf; font-size: 13.5px; text-decoration: none; font-weight: 500; transition: color 0.15s; }
+.nav-links a:hover, .nav-links a.active { color: #f0ece4; }
+.dark-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 7px 13px; color: #f0ece4; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px; transition: background 0.15s; }
+.dark-btn:hover { background: rgba(255,255,255,0.14); }
+
+/* ---------- AD SLOTS ---------- */
+.ad-slot { background: var(--card); border: 1px dashed var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+.ad-slot::before { content: "ad"; position: absolute; top: 6px; left: 9px; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); opacity: 0.6; }
+.ad-slot-banner { margin: 0 1.5rem 1.25rem; min-height: 90px; }
+.ad-slot-inline { margin: 1.75rem 0; min-height: 100px; }
+
+/* ---------- BLOG ---------- */
+.blog-wrap { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+.blog-back { display: inline-block; color: var(--muted); font-size: 13px; text-decoration: none; margin-bottom: 1.25rem; }
+.blog-back:hover { color: var(--accent); }
+.blog-eyebrow { color: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 8px; }
+.blog-title { font-size: 38px; font-weight: 400; line-height: 1.1; color: var(--text); margin-bottom: 10px; }
+.blog-meta { color: var(--muted); font-size: 13px; margin-bottom: 1.75rem; }
+.blog-dek { font-size: 16px; color: var(--muted); line-height: 1.6; margin-bottom: 2rem; }
+.blog-body p { font-size: 15.5px; line-height: 1.8; color: var(--text); margin-bottom: 1.1rem; }
+.blog-body h2 { font-size: 24px; font-weight: 400; margin: 2rem 0 0.75rem; color: var(--text); }
+.pick-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.4rem; margin: 1.25rem 0; box-shadow: 0 1px 0 var(--border), 0 6px 16px var(--shadow); }
+.pick-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.pick-meta { font-size: 12.5px; color: var(--gold); font-weight: 600; margin-bottom: 8px; }
+.pick-card p { margin-bottom: 0.6rem; font-size: 14.5px; }
+.pick-link { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--accent); text-decoration: none; margin-top: 4px; }
+.pick-link:hover { color: var(--accent-dark); }
+
+.blog-index-grid { display: flex; flex-direction: column; gap: 14px; margin-top: 1.5rem; }
+.blog-index-card { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem 1.5rem; text-decoration: none; box-shadow: 0 1px 0 var(--border), 0 6px 16px var(--shadow); transition: transform 0.18s, box-shadow 0.18s; }
+.blog-index-card:hover { transform: translateY(-2px); box-shadow: 0 1px 0 var(--border), 0 14px 28px var(--shadow); }
+.blog-index-card .blog-eyebrow { margin-bottom: 6px; }
+.blog-index-card h2 { font-size: 22px; color: var(--text); margin-bottom: 6px; font-weight: 400; }
+.blog-index-card p { color: var(--muted); font-size: 14px; line-height: 1.55; }
+.blog-index-card .blog-meta { margin: 8px 0 0; }
+
+/* ---------- FOOTER ---------- */
+.site-footer { border-top: 1px solid var(--border); padding: 1.75rem 1.5rem; text-align: center; color: var(--muted); font-size: 12.5px; }
+.site-footer a { color: var(--muted); text-decoration: none; }
+.site-footer a:hover { color: var(--accent); }
