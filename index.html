@@ -116,12 +116,12 @@
     .trailer-wrap { position:relative; width:100%; padding-top:56.25%; background:#000; border-radius:16px 16px 0 0; overflow:hidden; }
     .trailer-wrap iframe { position:absolute; inset:0; width:100%; height:100%; border:none; }
     .trailer-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-    .trailer-play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; cursor:pointer; background:rgba(0,0,0,0.35); transition:background 0.2s; }
+    .trailer-play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; cursor:pointer; background:rgba(0,0,0,0.35); transition:background 0.2s; z-index:8; }
     .trailer-play-btn:hover { background:rgba(0,0,0,0.15); }
-    .trailer-play-btn svg { width:64px; height:64px; filter:drop-shadow(0 2px 12px rgba(0,0,0,0.7)); }
-    .modal-close { position:absolute; top:10px; right:10px; background:rgba(6,4,2,0.6); border:none; border-radius:50%; width:32px; height:32px; color:#fff; font-size:18px; cursor:pointer; z-index:10; line-height:1; display:flex; align-items:center; justify-content:center; }
-    .modal-banner-text { position:absolute; bottom:14px; left:16px; right:16px; z-index:5; }
-    .modal-banner-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(6,4,2,0.92) 0%,rgba(6,4,2,0.1) 60%,transparent 100%); z-index:4; }
+    .trailer-play-btn svg { width:64px; height:64px; filter:drop-shadow(0 2px 12px rgba(0,0,0,0.7)); pointer-events:none; }
+    .modal-close { position:absolute; top:10px; right:10px; background:rgba(6,4,2,0.6); border:none; border-radius:50%; width:32px; height:32px; color:#fff; font-size:18px; cursor:pointer; z-index:20; line-height:1; display:flex; align-items:center; justify-content:center; }
+    .modal-banner-text { position:absolute; bottom:14px; left:16px; right:16px; z-index:9; pointer-events:none; }
+    .modal-banner-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(6,4,2,0.92) 0%,rgba(6,4,2,0.1) 60%,transparent 100%); z-index:3; pointer-events:none; }
     .modal-title { font-size:26px; color:#fff; line-height:1.1; }
     .modal-sub { font-size:12.5px; color:#c9bfaf; margin-top:3px; }
     .modal-body { padding:1.1rem 1.4rem 1.5rem; }
@@ -145,7 +145,8 @@
 
     /* PROVIDERS */
     .providers-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; align-items:center; }
-    .provider-chip { display:flex; align-items:center; gap:6px; background:var(--surface); border-radius:8px; padding:5px 10px; font-size:12px; font-weight:500; color:var(--text); border:1px solid var(--border); }
+    .provider-chip { display:flex; align-items:center; gap:6px; background:var(--surface); border-radius:8px; padding:5px 10px; font-size:12px; font-weight:500; color:var(--text); border:1px solid var(--border); text-decoration:none; transition:border-color 0.15s; cursor:pointer; }
+    .provider-chip:hover { border-color:var(--accent); color:var(--accent); }
     .provider-chip img { width:20px; height:20px; border-radius:4px; }
     .no-providers { font-size:12.5px; color:var(--muted); }
 
@@ -470,13 +471,27 @@ async function openModal(id) {
     const flatrate = regionData?.flatrate || [];
     const rent = regionData?.rent || [];
     const allProviders = [...new Map([...flatrate,...rent].map(p => [p.provider_id, p])).values()].slice(0,6);
+    const providerLinks = {
+      'Netflix': 'https://www.netflix.com/search?q=',
+      'Amazon Prime Video': 'https://www.amazon.com/s?k=',
+      'Disney Plus': 'https://www.disneyplus.com/search/',
+      'Apple TV Plus': 'https://tv.apple.com/search?term=',
+      'HBO Max': 'https://play.max.com/search?q=',
+      'Max': 'https://play.max.com/search?q=',
+      'Hulu': 'https://www.hulu.com/search?q=',
+      'Paramount Plus': 'https://www.paramountplus.com/search/',
+      'Showmax': 'https://www.showmax.com/eng/search?q=',
+    };
     const providersHTML = allProviders.length
       ? `<div class="modal-section">where to watch</div>
-         <div class="providers-row">${allProviders.map(p => `
-           <div class="provider-chip">
-             <img src="https://image.tmdb.org/t/p/w45${p.logo_path}" onerror="this.removeAttribute('src')" />
+         <div class="providers-row">${allProviders.map(p => {
+           const base = providerLinks[p.provider_name] || `https://www.justwatch.com/us/search?q=`;
+           const href = base + encodeURIComponent(m.title);
+           return `<a class="provider-chip" href="${href}" target="_blank" rel="noopener">
+             <img src="https://image.tmdb.org/t/p/w45${p.logo_path}" onerror="this.remove()" />
              ${p.provider_name}
-           </div>`).join('')}
+           </a>`;
+         }).join('')}
          </div>`
       : `<div class="modal-section">where to watch</div>
          <p class="no-providers" style="margin-bottom:13px">not available on major streaming platforms right now</p>`;
@@ -542,45 +557,31 @@ async function openModal(id) {
 
 function loadTrailer(key) {
   const wrap = document.getElementById('modal').querySelector('.trailer-wrap');
-  const url = `https://www.youtube.com/embed/${key}?autoplay=1&rel=0&origin=${encodeURIComponent(location.origin)}`;
-  wrap.innerHTML = `<iframe 
-    src="${url}" 
-    allowfullscreen 
-    allow="autoplay; encrypted-media; picture-in-picture"
-    referrerpolicy="strict-origin-when-cross-origin"
-    id="trailerFrame"
-  ></iframe>`;
-
-  // Fallback: if iframe fails to load after 4s, show a button to open on YouTube
-  const fallbackTimer = setTimeout(() => {
-    const frame = document.getElementById('trailerFrame');
-    if (!frame) return;
-    try {
-      // Check if iframe loaded anything meaningful
-      const loaded = frame.contentWindow !== null;
-      if (!loaded) showTrailerFallback(wrap, key);
-    } catch(e) {
-      showTrailerFallback(wrap, key);
-    }
-  }, 4000);
-
-  document.getElementById('trailerFrame')?.addEventListener('load', () => {
-    clearTimeout(fallbackTimer);
-  });
-  document.getElementById('trailerFrame')?.addEventListener('error', () => {
-    clearTimeout(fallbackTimer);
-    showTrailerFallback(wrap, key);
-  });
+  // Try inline embed first
+  wrap.innerHTML = `
+    <iframe 
+      id="trailerFrame"
+      src="https://www.youtube.com/embed/${key}?autoplay=1&rel=0&modestbranding=1" 
+      allowfullscreen 
+      allow="autoplay; encrypted-media; picture-in-picture"
+      style="position:absolute;inset:0;width:100%;height:100%;border:none;"
+    ></iframe>
+    <div id="trailerFallbackBtn" style="position:absolute;bottom:12px;right:12px;z-index:10;">
+      <a href="https://www.youtube.com/watch?v=${key}" target="_blank" rel="noopener"
+        style="background:rgba(0,0,0,0.75);color:#fff;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:5px;">
+        ▶ Open on YouTube
+      </a>
+    </div>`;
 }
 
 function showTrailerFallback(wrap, key) {
   const ytUrl = `https://www.youtube.com/watch?v=${key}`;
   wrap.innerHTML = `
-    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0a0a;gap:12px;padding:1rem;">
-      <svg width="48" height="48" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="32" fill="#e50914"/><polygon points="25,18 25,46 48,32" fill="#fff"/></svg>
-      <p style="color:#f0ece4;font-size:13.5px;font-weight:600;text-align:center;">Trailer blocked by your browser</p>
-      <a href="${ytUrl}" target="_blank" rel="noopener" 
-        style="background:#e50914;color:#fff;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;">
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0a0a;gap:14px;padding:1.5rem;">
+      <svg width="52" height="52" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="32" fill="#e50914"/><polygon points="25,18 25,46 48,32" fill="#fff"/></svg>
+      <p style="color:#f0ece4;font-size:13.5px;font-weight:600;text-align:center;margin:0;">Trailer blocked by your browser</p>
+      <a href="${ytUrl}" target="_blank" rel="noopener"
+        style="background:#e50914;color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;">
         ▶ Watch on YouTube
       </a>
     </div>`;
