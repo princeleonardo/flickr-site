@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9070390501505190" crossorigin="anonymous"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); transition: background 0.25s, color 0.25s; -webkit-font-smoothing: antialiased; }
@@ -243,7 +243,7 @@
   <div id="tab-search">
     <div id="status"></div>
     <div class="ad-slot ad-banner">
-      <ins class="adsbygoogle" style="display:block;width:100%;height:90px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000000" data-ad-format="horizontal"></ins>
+      <ins class="adsbygoogle" style="display:block;width:100%;height:90px" data-ad-client="ca-pub-9070390501505190" data-ad-slot="0000000000" data-ad-format="horizontal"></ins>
     </div>
     <div id="sectionLabel" class="section-label">trending this week</div>
     <div class="grid" id="grid"></div>
@@ -408,7 +408,7 @@ function renderResults() {
     const poster = m.poster_path ? `${IMG}/w300${m.poster_path}` : '';
     const year = (m.release_date||'').slice(0,4);
     const rating = m.vote_average ? m.vote_average.toFixed(1) : '';
-    const adSlot = (i > 0 && i % 8 === 7) ? `<div class="ad-slot ad-grid" style="min-height:120px"><ins class="adsbygoogle" style="display:block;width:100%;height:100%" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000002" data-ad-format="fluid" data-ad-layout-key="-6t+ed+2i-1n-4w"></ins></div>` : '';
+    const adSlot = (i > 0 && i % 8 === 7) ? `<div class="ad-slot ad-grid" style="min-height:120px"><ins class="adsbygoogle" style="display:block;width:100%;height:100%" data-ad-client="ca-pub-9070390501505190" data-ad-slot="0000000002" data-ad-format="fluid" data-ad-layout-key="-6t+ed+2i-1n-4w"></ins></div>` : '';
     return `<div class="card" onclick="openModal(${m.id})">
       <div class="card-poster-wrap">
         <img src="${poster}" alt="${m.title}" onerror="this.style.background='var(--surface)';this.removeAttribute('src')"/>
@@ -542,7 +542,7 @@ async function openModal(id) {
         ${providersHTML}
         ${similarHTML}
         <div class="ad-slot" style="margin-bottom:13px;min-height:80px;">
-          <ins class="adsbygoogle" style="display:block;width:100%;height:80px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000001" data-ad-format="horizontal"></ins>
+          <ins class="adsbygoogle" style="display:block;width:100%;height:80px" data-ad-client="ca-pub-9070390501505190" data-ad-slot="0000000001" data-ad-format="horizontal"></ins>
         </div>
         <div class="modal-actions">
           <button class="btn ${inWL?'btn-saved':'btn-primary'}" onclick="toggleWL()">${inWL?'✓ saved':'+ watchlist'}</button>
