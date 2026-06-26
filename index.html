@@ -625,11 +625,14 @@ function renderWatchlist() {
   c.innerHTML = watchlist.map(m => `
     <div class="wl-item">
       <img class="wl-poster" src="${m.poster_path ? IMG+'/w92'+m.poster_path : ''}" onerror="this.style.background='var(--surface)'" />
-      <div>
-        <div class="wl-title">${m.title}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="wl-title" style="cursor:pointer;" onclick="openModal(${m.id})">${m.title}</div>
         <div class="wl-sub">${(m.release_date||'').slice(0,4)}${m.vote_average ? ' · ★ '+m.vote_average.toFixed(1) : ''}</div>
       </div>
-      <button class="wl-remove" onclick="removeWL(${m.id})">remove</button>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="btn btn-secondary" style="padding:5px 11px;font-size:12px;" onclick="openModal(${m.id})">▶ open</button>
+        <button class="wl-remove" onclick="removeWL(${m.id})">remove</button>
+      </div>
     </div>`).join('');
 }
 
