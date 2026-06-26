@@ -266,8 +266,16 @@ const TMDB_KEY = '8019621507160959e76e235a067e8d77';
 const TMDB = 'https://api.themoviedb.org/3';
 const IMG = 'https://image.tmdb.org/t/p';
 
-let results = [], watchlist = [], minRating = 0, sortBy = 'default';
+let results = [], minRating = 0, sortBy = 'default';
 let suggestTimer = null, selectedMovie = null, isDark = false;
+
+// Load watchlist from localStorage, fall back to empty array
+let watchlist = [];
+try { watchlist = JSON.parse(localStorage.getItem('flickr_watchlist')) || []; } catch(e) {}
+
+function saveWatchlist() {
+  try { localStorage.setItem('flickr_watchlist', JSON.stringify(watchlist)); } catch(e) {}
+}
 
 const GENRES_MAP = {
   28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',
@@ -598,6 +606,7 @@ function toggleWL() {
   const m = selectedMovie;
   const idx = watchlist.findIndex(w => w.id === m.id);
   if (idx > -1) watchlist.splice(idx,1); else watchlist.push(m);
+  saveWatchlist();
   updateWLCount();
   renderWatchlist();
   closeModal();
@@ -626,6 +635,7 @@ function renderWatchlist() {
 
 function removeWL(id) {
   watchlist = watchlist.filter(w => w.id !== id);
+  saveWatchlist();
   updateWLCount();
   renderWatchlist();
 }
