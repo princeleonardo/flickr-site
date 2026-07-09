@@ -230,6 +230,7 @@
     <div class="nav-links">
       <a href="./index.html" id="navSearch">search</a>
       <a href="./blog/index.html" id="navBlog">blog</a>
+      <a href="./about.html" id="navAbout">about</a>
       <select class="lang-select" id="langSelect" onchange="setLanguage(this.value)" aria-label="Language"></select>
       <button class="theme-toggle" onclick="toggleDark()" id="darkBtn" aria-label="Toggle dark mode" aria-pressed="false">
         <span class="theme-toggle-thumb">
@@ -289,7 +290,7 @@
 </div>
 
 <div class="site-footer">
-  &copy; 2026 Flickr &middot; <a href="./blog/index.html" id="footerBlog">blog</a> &middot; <a href="./privacy.html" id="footerPrivacy">privacy policy</a> &middot; <span id="footerPowered">powered by TMDB</span>
+  &copy; 2026 Flickr &middot; <a href="./blog/index.html" id="footerBlog">blog</a> &middot; <a href="./about.html" id="footerAbout">about</a> &middot; <a href="./privacy.html" id="footerPrivacy">privacy policy</a> &middot; <span id="footerPowered">powered by TMDB</span>
 </div>
 
 <script>
@@ -313,7 +314,7 @@ let currentLang = 'en';
 try { currentLang = localStorage.getItem('flickr_lang') || 'en'; } catch(e) {}
 
 const I18N = {
-  en: { all:'all', tagline:'free movie discovery · no piracy · just vibes', navSearch:'search', navBlog:'blog',
+  en: { all:'all', navAbout:'about', tagline:'free movie discovery · no piracy · just vibes', navSearch:'search', navBlog:'blog',
     searchPlaceholder:'search any movie...', searchBtn:'Search', tabDiscover:'discover', watchlist:'watchlist',
     allRatings:'all ratings', sortDefault:'default', sortRating:'top rated', sortYear:'newest',
     trending:'trending this week', resultsFor:m=>`results for "${m}"`, searching:'searching...', loading:'loading...',
@@ -324,7 +325,7 @@ const I18N = {
     votes:'votes', flickrMeter:'flickr meter', footerBlog:'blog', footerPrivacy:'privacy policy', footerPowered:'powered by TMDB',
     trailerBlocked:'Trailer blocked by your browser', watchYoutube:'▶ Watch on YouTube', openYoutube:'▶ Open on YouTube',
     failedDetails:'failed to load movie details' },
-  es: { all:'todas', tagline:'descubre películas gratis · sin piratería · solo buen rollo', navSearch:'buscar', navBlog:'blog',
+  es: { all:'todas', navAbout:'nosotros', tagline:'descubre películas gratis · sin piratería · solo buen rollo', navSearch:'buscar', navBlog:'blog',
     searchPlaceholder:'busca cualquier película...', searchBtn:'Buscar', tabDiscover:'descubrir', watchlist:'lista',
     allRatings:'todas las notas', sortDefault:'por defecto', sortRating:'mejor valoradas', sortYear:'más recientes',
     trending:'tendencias de la semana', resultsFor:m=>`resultados para "${m}"`, searching:'buscando...', loading:'cargando...',
@@ -335,7 +336,7 @@ const I18N = {
     votes:'votos', flickrMeter:'flickr meter', footerBlog:'blog', footerPrivacy:'política de privacidad', footerPowered:'con datos de TMDB',
     trailerBlocked:'Tu navegador bloqueó el tráiler', watchYoutube:'▶ Ver en YouTube', openYoutube:'▶ Abrir en YouTube',
     failedDetails:'no se pudo cargar la película' },
-  fr: { all:'tous', tagline:'découverte de films gratuite · zéro piratage · juste l’ambiance', navSearch:'recherche', navBlog:'blog',
+  fr: { all:'tous', navAbout:'à propos', tagline:'découverte de films gratuite · zéro piratage · juste l’ambiance', navSearch:'recherche', navBlog:'blog',
     searchPlaceholder:'cherchez un film...', searchBtn:'Rechercher', tabDiscover:'découvrir', watchlist:'liste',
     allRatings:'toutes les notes', sortDefault:'par défaut', sortRating:'les mieux notés', sortYear:'les plus récents',
     trending:'tendances de la semaine', resultsFor:m=>`résultats pour « ${m} »`, searching:'recherche...', loading:'chargement...',
@@ -346,7 +347,7 @@ const I18N = {
     votes:'votes', flickrMeter:'flickr meter', footerBlog:'blog', footerPrivacy:'confidentialité', footerPowered:'propulsé par TMDB',
     trailerBlocked:'Bande-annonce bloquée par votre navigateur', watchYoutube:'▶ Voir sur YouTube', openYoutube:'▶ Ouvrir sur YouTube',
     failedDetails:'échec du chargement du film' },
-  de: { all:'alle', tagline:'kostenlose Filmentdeckung · keine Piraterie · einfach Vibes', navSearch:'suche', navBlog:'blog',
+  de: { all:'alle', navAbout:'über uns', tagline:'kostenlose Filmentdeckung · keine Piraterie · einfach Vibes', navSearch:'suche', navBlog:'blog',
     searchPlaceholder:'Film suchen...', searchBtn:'Suchen', tabDiscover:'entdecken', watchlist:'merkliste',
     allRatings:'alle bewertungen', sortDefault:'standard', sortRating:'am besten bewertet', sortYear:'neueste',
     trending:'im trend diese woche', resultsFor:m=>`ergebnisse für „${m}"`, searching:'suche läuft...', loading:'lädt...',
@@ -357,7 +358,7 @@ const I18N = {
     votes:'stimmen', flickrMeter:'flickr meter', footerBlog:'blog', footerPrivacy:'datenschutz', footerPowered:'powered by TMDB',
     trailerBlocked:'Trailer von deinem Browser blockiert', watchYoutube:'▶ Auf YouTube ansehen', openYoutube:'▶ Auf YouTube öffnen',
     failedDetails:'Film konnte nicht geladen werden' },
-  pt: { all:'todos', tagline:'descoberta de filmes grátis · sem pirataria · só vibe', navSearch:'buscar', navBlog:'blog',
+  pt: { all:'todos', navAbout:'sobre', tagline:'descoberta de filmes grátis · sem pirataria · só vibe', navSearch:'buscar', navBlog:'blog',
     searchPlaceholder:'busque qualquer filme...', searchBtn:'Buscar', tabDiscover:'descobrir', watchlist:'lista',
     allRatings:'todas as notas', sortDefault:'padrão', sortRating:'mais bem avaliados', sortYear:'mais recentes',
     trending:'em alta esta semana', resultsFor:m=>`resultados para "${m}"`, searching:'buscando...', loading:'carregando...',
@@ -474,6 +475,8 @@ function applyStaticTranslations() {
   document.getElementById('tagline').textContent = t('tagline');
   document.getElementById('navSearch').textContent = t('navSearch');
   document.getElementById('navBlog').textContent = t('navBlog');
+  document.getElementById('navAbout').textContent = t('navAbout');
+  document.getElementById('footerAbout').textContent = t('navAbout');
   document.getElementById('searchInput').placeholder = t('searchPlaceholder');
   document.getElementById('searchBtn').textContent = t('searchBtn');
   document.getElementById('tabDiscover').textContent = t('tabDiscover');

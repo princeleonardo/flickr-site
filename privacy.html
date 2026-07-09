@@ -4,59 +4,78 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Privacy Policy — Flickr</title>
-  <meta name="description" content="Privacy policy for Flickr movie discovery site." />
+  <meta name="description" content="Flickr's privacy policy: what data we collect, how Google AdSense and TMDB are used, and how to control your data." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23141414'/%3E%3Crect x='6' y='6' width='52' height='14' fill='%23e50914'/%3E%3Cg fill='%23141414'%3E%3Crect x='10' y='9' width='6' height='8'/%3E%3Crect x='22' y='9' width='6' height='8'/%3E%3Crect x='34' y='9' width='6' height='8'/%3E%3Crect x='46' y='9' width='6' height='8'/%3E%3C/g%3E%3Cpolygon points='26,30 26,50 44,40' fill='%23f0ece4'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9070390501505190" crossorigin="anonymous"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #f0ece4; color: #161412; -webkit-font-smoothing: antialiased; }
-    .dark { background: #0a0a0a; color: #f0ece4; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); transition: background 0.25s, color 0.25s; -webkit-font-smoothing: antialiased; }
+    :root {
+      --bg: #f0ece4; --surface: #e6e0d4; --card: #fffdf8;
+      --border: #d8d0c0; --text: #161412; --muted: #6f655a;
+      --accent: #e50914; --accent-dark: #b30710; --gold: #c9a227;
+      --shadow: rgba(20,16,10,0.10);
+    }
+    .dark {
+      --bg: #0a0a0a; --surface: #161412; --card: #1a1814;
+      --border: #2a2620; --text: #f0ece4; --muted: #948a7c;
+      --shadow: rgba(0,0,0,0.5);
+    }
+    h1,.brand-text h1 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.5px; }
 
-    .hero { background: #0a0a0a; padding: 1.5rem; }
-    .hero-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-    .brand-link { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-    .brand-logo { width: 42px; height: 42px; }
-    .brand-text h1 { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: #f0ece4; line-height: 1; }
-    .brand-text p { color: #948a7c; font-size: 12px; margin-top: 3px; }
-    .nav-links { display: flex; gap: 16px; align-items: center; }
-    .nav-links a { color: #c9bfaf; font-size: 13px; text-decoration: none; font-weight: 500; }
-    .nav-links a:hover { color: #f0ece4; }
-    .dark-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 7px 13px; color: #f0ece4; cursor: pointer; font-size: 13px; }
+    .hero { background:#0a0a0a; padding:1.5rem 1.5rem 1.9rem; position:relative; overflow:visible; }
+    .hero::before { content:""; position:absolute; inset:0; background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,0.025) 38px 40px); pointer-events:none; }
+    .hero-top { display:flex; justify-content:space-between; align-items:center; position:relative; flex-wrap:wrap; gap:10px; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand-logo { width:44px; height:44px; flex-shrink:0; }
+    .brand-text h1 { font-size:32px; font-weight:400; color:#f0ece4; line-height:1; }
+    .brand-text p { color:#948a7c; font-size:12px; margin-top:3px; }
+    .nav-links { display:flex; gap:16px; align-items:center; }
+    .nav-links a { color:#c9bfaf; font-size:13px; text-decoration:none; font-weight:500; transition:color 0.15s; }
+    .nav-links a:hover { color:#f0ece4; }
+    .nav-links a.current { color:#f0ece4; border-bottom:2px solid var(--accent); padding-bottom:2px; }
+    .theme-toggle { position:relative; width:50px; height:27px; border-radius:99px; border:1px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.08); cursor:pointer; padding:0; flex-shrink:0; transition:background 0.15s; }
+    .theme-toggle:hover { background:rgba(255,255,255,0.15); }
+    .theme-toggle-thumb { position:absolute; top:2px; left:2px; width:21px; height:21px; border-radius:50%; background:#f0ece4; display:flex; align-items:center; justify-content:center; transition:transform 0.25s cubic-bezier(.4,0,.2,1); box-shadow:0 1px 3px rgba(0,0,0,0.35); }
+    .theme-toggle.is-dark .theme-toggle-thumb { transform:translateX(23px); background:#141210; }
+    .theme-toggle-thumb svg { position:absolute; width:13px; height:13px; transition:opacity 0.15s; }
+    .theme-toggle-thumb .icon-sun { color:#c9a227; opacity:1; }
+    .theme-toggle-thumb .icon-moon { color:#c9bfaf; opacity:0; }
+    .theme-toggle.is-dark .icon-sun { opacity:0; }
+    .theme-toggle.is-dark .icon-moon { opacity:1; }
+    .page-title { margin-top:1.4rem; font-size:40px; color:#f0ece4; position:relative; }
+    .page-sub { color:#c9bfaf; font-size:13px; margin-top:4px; position:relative; }
 
-    .wrap { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
-    .page-title { font-family: 'Bebas Neue', sans-serif; font-size: 40px; margin-bottom: 6px; color: #161412; }
-    .dark .page-title { color: #f0ece4; }
-    .updated { font-size: 13px; color: #6f655a; margin-bottom: 2rem; }
-    .dark .updated { color: #948a7c; }
+    .content { max-width:760px; margin:0 auto; padding:2.4rem 1.5rem 3.5rem; }
+    .toc { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.2rem 1.4rem; margin-bottom:2rem; }
+    .toc-label { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+    .toc ol { padding-left:18px; }
+    .toc li { font-size:13.5px; margin-bottom:6px; }
+    .toc a { color:var(--text); text-decoration:none; }
+    .toc a:hover { color:var(--accent); }
 
-    .section { margin-bottom: 2rem; }
-    .section h2 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #161412; }
-    .dark .section h2 { color: #f0ece4; }
-    .section p { font-size: 14.5px; line-height: 1.8; color: #6f655a; margin-bottom: 8px; }
-    .dark .section p { color: #948a7c; }
-    .section ul { padding-left: 1.25rem; margin-top: 6px; }
-    .section ul li { font-size: 14.5px; line-height: 1.8; color: #6f655a; margin-bottom: 4px; }
-    .dark .section ul li { color: #948a7c; }
+    section.policy-section { margin-bottom:1.9rem; scroll-margin-top:1rem; }
+    section.policy-section h2 { font-family:'Bebas Neue',sans-serif; font-weight:400; letter-spacing:0.3px; font-size:22px; margin-bottom:10px; color:var(--text); }
+    section.policy-section p { font-size:14.5px; line-height:1.8; color:var(--text); margin-bottom:0.8rem; }
+    section.policy-section p:last-child { margin-bottom:0; }
+    section.policy-section ul { padding-left:20px; margin-bottom:0.8rem; }
+    section.policy-section li { font-size:14.5px; line-height:1.8; color:var(--text); margin-bottom:4px; }
+    section.policy-section a { color:var(--accent); text-decoration:none; }
+    section.policy-section a:hover { text-decoration:underline; }
+    .muted-note { color:var(--muted); font-size:13px; margin-top:1.6rem; }
 
-    .contact-box { background: #e6e0d4; border-radius: 10px; padding: 1.25rem 1.4rem; margin-top: 2rem; }
-    .dark .contact-box { background: #161412; }
-    .contact-box p { font-size: 14px; color: #6f655a; }
-    .dark .contact-box p { color: #948a7c; }
-
-    .site-footer { border-top: 1px solid #d8d0c0; padding: 1.5rem; text-align: center; color: #6f655a; font-size: 12px; }
-    .dark .site-footer { border-top-color: #2a2620; color: #948a7c; }
-    .site-footer a { color: #6f655a; text-decoration: none; }
-    .site-footer a:hover { color: #e50914; }
+    .site-footer { border-top:1px solid var(--border); padding:1.5rem; text-align:center; color:var(--muted); font-size:12px; }
+    .site-footer a { color:var(--muted); text-decoration:none; }
+    .site-footer a:hover { color:var(--accent); }
   </style>
 </head>
 <body>
 
 <div class="hero">
   <div class="hero-top">
-    <a class="brand-link" href="./index.html">
+    <div class="brand">
       <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
         <rect width="64" height="64" rx="10" fill="#161412"/>
         <rect x="6" y="6" width="52" height="14" rx="2" fill="#e50914"/>
@@ -73,78 +92,125 @@
         <h1>FLICKR</h1>
         <p>free movie discovery &middot; no piracy &middot; just vibes</p>
       </div>
-    </a>
+    </div>
     <div class="nav-links">
       <a href="./index.html">search</a>
       <a href="./blog/index.html">blog</a>
-      <button class="dark-btn" onclick="toggleDark()" id="darkBtn">🌙 dark</button>
+      <a href="./about.html">about</a>
+      <button class="theme-toggle" onclick="toggleDark()" id="darkBtn" aria-label="Toggle dark mode" aria-pressed="false">
+        <span class="theme-toggle-thumb">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </span>
+      </button>
     </div>
   </div>
+  <h1 class="page-title">Privacy Policy</h1>
+  <p class="page-sub">Last updated: July 9, 2026</p>
 </div>
 
-<div class="wrap">
-  <div class="page-title">Privacy Policy</div>
-  <p class="updated">Last updated: June 2026</p>
+<div class="content">
 
-  <div class="section">
-    <h2>Who we are</h2>
-    <p>Flickr (<strong>flickr-site.vercel.app</strong>) is a free movie discovery tool that helps you find films, view ratings, watch trailers, and find where to legally stream them. We do not host or stream any movies ourselves.</p>
+  <div class="toc">
+    <div class="toc-label">on this page</div>
+    <ol>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#info-we-collect">Information we collect</a></li>
+      <li><a href="#local-storage">Your watchlist &amp; local storage</a></li>
+      <li><a href="#third-party">Third-party services (TMDB, YouTube, AdSense)</a></li>
+      <li><a href="#cookies">Cookies &amp; advertising</a></li>
+      <li><a href="#choices">Your choices &amp; controls</a></li>
+      <li><a href="#children">Children's privacy</a></li>
+      <li><a href="#security">Data retention &amp; security</a></li>
+      <li><a href="#changes">Changes to this policy</a></li>
+      <li><a href="#contact">Contact us</a></li>
+    </ol>
   </div>
 
-  <div class="section">
-    <h2>What information we collect</h2>
-    <p>We do not collect any personal information directly. We do not require you to create an account or log in. However, third-party services used on this site may collect data automatically:</p>
+  <section class="policy-section" id="overview">
+    <h2>1. Overview</h2>
+    <p>Flickr ("we," "our," "the site") is a free movie discovery tool. This policy explains what information is collected when you use flickr-site.vercel.app, how it's used, and what control you have over it. We've tried to write it in plain language rather than dense legal boilerplate — if anything is unclear, reach out using the contact details at the bottom of this page.</p>
+    <p>The short version: Flickr doesn't require an account, doesn't ask for personal details, and stores your watchlist only in your own browser. The main privacy-relevant activity on the site comes from the third-party services we rely on — movie data, video embeds, and advertising — which are detailed below.</p>
+  </section>
+
+  <section class="policy-section" id="info-we-collect">
+    <h2>2. Information we collect</h2>
+    <p>We do not operate user accounts, logins, or sign-up forms, so we don't collect names, email addresses, or payment details through the site itself.</p>
+    <p>Like virtually any website, our hosting provider and content-delivery network automatically log basic technical information for security and performance purposes, such as:</p>
     <ul>
-      <li><strong>Google AdSense</strong> — serves ads on this site and uses cookies to show you relevant advertisements based on your browsing history and interests.</li>
-      <li><strong>TMDB (The Movie Database)</strong> — powers our movie search and data. Requests are made to their API when you search or browse movies.</li>
-      <li><strong>YouTube</strong> — trailers are embedded via YouTube. When you play a trailer, YouTube may collect data per their own privacy policy.</li>
-      <li><strong>Google Fonts</strong> — fonts are loaded from Google's servers, which may log your IP address.</li>
+      <li>IP address (used transiently for request routing and abuse prevention)</li>
+      <li>Browser type and device/operating system</li>
+      <li>Pages visited and approximate time spent</li>
+      <li>Referring URL (the page that linked you here)</li>
     </ul>
-  </div>
+    <p>This information is standard server/CDN log data and is not used by us to build an individual profile of you.</p>
+  </section>
 
-  <div class="section">
-    <h2>Cookies</h2>
-    <p>This site uses cookies through Google AdSense to serve personalised advertisements. These cookies track your browsing behaviour across websites to show you relevant ads. You can opt out of personalised ads by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener" style="color:#e50914;">Google's ad settings</a>.</p>
-  </div>
+  <section class="policy-section" id="local-storage">
+    <h2>3. Your watchlist &amp; local storage</h2>
+    <p>When you add a movie to your watchlist, that list is saved using your browser's <strong>local storage</strong> — a small amount of data kept on your own device. It is never transmitted to our servers, and we never see or have access to it.</p>
+    <p>Because it lives in your browser, your watchlist is specific to the device and browser you used to create it. Clearing your browser's site data, using a different browser, or switching devices will not carry it over. Your selected language and theme (light/dark) preference are stored the same way.</p>
+  </section>
 
-  <div class="section">
-    <h2>How we use your data</h2>
-    <p>We do not sell, trade, or share any personal data. The only data processing that occurs on this site is handled by the third-party services listed above, each governed by their own privacy policies:</p>
+  <section class="policy-section" id="third-party">
+    <h2>4. Third-party services</h2>
+    <p><strong>The Movie Database (TMDB).</strong> Movie titles, posters, cast lists, ratings, and descriptions are fetched live from TMDB's public API. Your search terms are sent to TMDB's servers in order to return results; this use is subject to <a href="https://www.themoviedb.org/privacy-policy" target="_blank" rel="noopener">TMDB's own privacy policy</a>. Flickr is not endorsed or certified by TMDB.</p>
+    <p><strong>YouTube (trailers).</strong> When you press play on a trailer, an embedded YouTube player loads, which is operated by Google. That embed may set its own cookies and collect viewing data in line with <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's privacy policy</a>. No trailer or video data loads until you actively click play.</p>
+    <p><strong>Streaming provider links.</strong> The "where to watch" links on each movie take you to the relevant platform's own search page (Netflix, Prime Video, Disney+, etc.). Once you leave Flickr, that platform's own privacy policy applies.</p>
+  </section>
+
+  <section class="policy-section" id="cookies">
+    <h2>5. Cookies &amp; advertising</h2>
+    <p>Flickr displays ads through <strong>Google AdSense</strong>. Google and its advertising partners may use cookies, device identifiers, and similar technologies to serve ads based on your prior visits to this and other websites, and to measure ad performance.</p>
+    <p>Google's use of advertising cookies enables it and its partners to serve ads based on your visits to this site and/or other sites on the Internet. You can opt out of personalized advertising by visiting <a href="https://adssettings.google.com" target="_blank" rel="noopener">Google's Ads Settings</a>, or opt out of a third-party vendor's use of cookies for personalized advertising by visiting <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener">www.aboutads.info</a>.</p>
+    <p>We do not control the specific cookies that AdSense sets, and recommend reviewing Google's own disclosures for the most current detail on what's collected and how it's used.</p>
+  </section>
+
+  <section class="policy-section" id="choices">
+    <h2>6. Your choices &amp; controls</h2>
     <ul>
-      <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:#e50914;">Google Privacy Policy</a> (covers AdSense, Fonts, YouTube)</li>
-      <li><a href="https://www.themoviedb.org/privacy-policy" target="_blank" rel="noopener" style="color:#e50914;">TMDB Privacy Policy</a></li>
+      <li>Clear your watchlist and language/theme preferences at any time by clearing this site's data in your browser settings.</li>
+      <li>Use your browser's cookie settings or a content blocker to limit third-party cookies from ads or embedded video.</li>
+      <li>Opt out of personalized advertising via the Google links in Section 5.</li>
+      <li>If you are located somewhere with statutory data rights (for example under GDPR or CCPA/CPRA) and believe we hold personal data about you beyond what's described here, contact us using the details in Section 10 and we'll respond as required by applicable law.</li>
     </ul>
-  </div>
+  </section>
 
-  <div class="section">
-    <h2>Your rights</h2>
-    <p>Depending on where you live, you may have the right to access, correct, or delete data held about you by the third-party services above. Please refer to their individual privacy policies for how to exercise these rights.</p>
-  </div>
+  <section class="policy-section" id="children">
+    <h2>7. Children's privacy</h2>
+    <p>Flickr is not directed at children under 13, and we do not knowingly collect personal information from children. Some content discoverable through the site (movie titles, trailers) may carry mature ratings, consistent with the third-party sources it's pulled from; parental discretion applies as it would with any film database or streaming guide.</p>
+  </section>
 
-  <div class="section">
-    <h2>Children's privacy</h2>
-    <p>This site is not directed at children under the age of 13. We do not knowingly collect personal information from children.</p>
-  </div>
+  <section class="policy-section" id="security">
+    <h2>8. Data retention &amp; security</h2>
+    <p>Because we don't operate accounts or store personal data on our own servers, there is little of ours to secure beyond standard hosting-provider protections (HTTPS encryption in transit, provider-level infrastructure security). Data you store locally in your browser (watchlist, preferences) remains under your control and is retained only as long as your browser keeps it.</p>
+  </section>
 
-  <div class="section">
-    <h2>Changes to this policy</h2>
-    <p>We may update this privacy policy from time to time. Any changes will be reflected on this page with an updated date at the top.</p>
-  </div>
+  <section class="policy-section" id="changes">
+    <h2>9. Changes to this policy</h2>
+    <p>We may update this policy from time to time to reflect changes in the services we use or in applicable law. The "last updated" date at the top of this page will always reflect the most recent revision. Material changes will be reflected here directly; we encourage checking back periodically.</p>
+  </section>
 
-  <div class="contact-box">
-    <p>Questions about this privacy policy? This site is an independent project — for any concerns, please refer to the third-party service policies linked above.</p>
-  </div>
+  <section class="policy-section" id="contact">
+    <h2>10. Contact us</h2>
+    <p>Questions about this policy or how Flickr handles data can be sent to <a href="mailto:hello@flickr-site.vercel.app">hello@flickr-site.vercel.app</a>.</p>
+  </section>
+
+  <p class="muted-note">This policy is provided for transparency and general informational purposes and does not constitute legal advice. If you need this policy tailored to specific regulatory requirements for your jurisdiction, consult a qualified professional.</p>
 </div>
 
 <div class="site-footer">
-  &copy; 2026 Flickr &middot; <a href="./index.html">back to search</a> &middot; <a href="./blog/index.html">blog</a>
+  &copy; 2026 Flickr &middot; <a href="./blog/index.html">blog</a> &middot; <a href="./about.html">about</a> &middot; <a href="./privacy.html">privacy policy</a> &middot; powered by TMDB
 </div>
 
 <script>
+  let isDark = false;
   function toggleDark() {
-    document.body.classList.toggle('dark');
-    const isDark = document.body.classList.contains('dark');
-    document.getElementById('darkBtn').textContent = isDark ? '☀️ light' : '🌙 dark';
+    isDark = !isDark;
+    document.body.classList.toggle('dark', isDark);
+    const btn = document.getElementById('darkBtn');
+    btn.classList.toggle('is-dark', isDark);
+    btn.setAttribute('aria-pressed', String(isDark));
   }
 </script>
 </body>
