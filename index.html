@@ -39,6 +39,31 @@
     .dark-btn { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:7px 13px; color:#f0ece4; cursor:pointer; font-size:13px; transition:background 0.15s; }
     .dark-btn:hover { background:rgba(255,255,255,0.15); }
 
+    /* THEME TOGGLE (icon switch, no emoji) */
+    .theme-toggle { position:relative; width:50px; height:27px; border-radius:99px; border:1px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.08); cursor:pointer; padding:0; flex-shrink:0; transition:background 0.15s; }
+    .theme-toggle:hover { background:rgba(255,255,255,0.15); }
+    .theme-toggle-thumb { position:absolute; top:2px; left:2px; width:21px; height:21px; border-radius:50%; background:#f0ece4; display:flex; align-items:center; justify-content:center; transition:transform 0.25s cubic-bezier(.4,0,.2,1); box-shadow:0 1px 3px rgba(0,0,0,0.35); }
+    .theme-toggle.is-dark .theme-toggle-thumb { transform:translateX(23px); background:#141210; }
+    .theme-toggle-thumb svg { position:absolute; width:13px; height:13px; transition:opacity 0.15s; }
+    .theme-toggle-thumb .icon-sun { color:#c9a227; opacity:1; }
+    .theme-toggle-thumb .icon-moon { color:#c9bfaf; opacity:0; }
+    .theme-toggle.is-dark .icon-sun { opacity:0; }
+    .theme-toggle.is-dark .icon-moon { opacity:1; }
+
+    /* LANGUAGE SELECT */
+    .lang-select { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:6px 8px; color:#f0ece4; cursor:pointer; font-size:12.5px; transition:background 0.15s; }
+    .lang-select:hover { background:rgba(255,255,255,0.15); }
+    .lang-select option { background:#161412; color:#f0ece4; }
+
+    /* FLICKR METER (rating donut chart) */
+    .flickr-meter-row { display:flex; align-items:center; gap:14px; margin-bottom:13px; }
+    .flickr-meter-donut { position:relative; width:60px; height:60px; border-radius:50%; flex-shrink:0; }
+    .flickr-meter-donut::before { content:""; position:absolute; inset:6px; border-radius:50%; background:var(--card); }
+    .flickr-meter-pct { position:relative; z-index:1; width:60px; height:60px; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:17px; letter-spacing:0.5px; color:var(--text); }
+    .flickr-meter-info { display:flex; flex-direction:column; gap:3px; }
+    .flickr-meter-label { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); }
+    .flickr-meter-votes { font-size:12.5px; color:var(--muted); }
+
     /* SEARCH — z-index must be above everything below hero */
     .search-wrap { position:relative; z-index:202; margin-top:1.1rem; }
     .search-row { display:flex; gap:8px; }
@@ -199,19 +224,25 @@
       </svg>
       <div class="brand-text">
         <h1>FLICKR</h1>
-        <p>free movie discovery &middot; no piracy &middot; just vibes</p>
+        <p id="tagline">free movie discovery &middot; no piracy &middot; just vibes</p>
       </div>
     </div>
     <div class="nav-links">
-      <a href="./index.html">search</a>
-      <a href="./blog/index.html">blog</a>
-      <button class="dark-btn" onclick="toggleDark()" id="darkBtn">🌙 dark</button>
+      <a href="./index.html" id="navSearch">search</a>
+      <a href="./blog/index.html" id="navBlog">blog</a>
+      <select class="lang-select" id="langSelect" onchange="setLanguage(this.value)" aria-label="Language"></select>
+      <button class="theme-toggle" onclick="toggleDark()" id="darkBtn" aria-label="Toggle dark mode" aria-pressed="false">
+        <span class="theme-toggle-thumb">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </span>
+      </button>
     </div>
   </div>
   <div class="search-wrap">
     <div class="search-row">
       <input type="text" id="searchInput" placeholder="search any movie..." oninput="handleInput(this.value)" onkeydown="if(event.key==='Enter')doSearch()" />
-      <button onclick="doSearch()">Search</button>
+      <button onclick="doSearch()" id="searchBtn">Search</button>
     </div>
     <div class="suggestions" id="suggestions"></div>
   </div>
@@ -221,20 +252,20 @@
 
 <div class="tabs-row">
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('search',this)">discover</div>
+    <div class="tab active" onclick="switchTab('search',this)" id="tabDiscover">discover</div>
     <div class="tab" onclick="switchTab('watchlist',this)" id="wlTab">watchlist (0)</div>
   </div>
   <div class="filters">
-    <select onchange="minRating=+this.value;renderResults()">
-      <option value="0">all ratings</option>
+    <select id="ratingSelect" onchange="minRating=+this.value;renderResults()">
+      <option value="0" id="optAllRatings">all ratings</option>
       <option value="6">6+ ⭐</option>
       <option value="7">7+ ⭐</option>
       <option value="8">8+ ⭐</option>
     </select>
-    <select onchange="sortBy=this.value;renderResults()">
-      <option value="default">default</option>
-      <option value="rating">top rated</option>
-      <option value="year">newest</option>
+    <select id="sortSelect" onchange="sortBy=this.value;renderResults()">
+      <option value="default" id="optSortDefault">default</option>
+      <option value="rating" id="optSortRating">top rated</option>
+      <option value="year" id="optSortYear">newest</option>
     </select>
   </div>
 </div>
@@ -258,7 +289,7 @@
 </div>
 
 <div class="site-footer">
-  &copy; 2026 Flickr &middot; <a href="./blog/index.html">blog</a> &middot; <a href="./privacy.html">privacy policy</a> &middot; powered by TMDB
+  &copy; 2026 Flickr &middot; <a href="./blog/index.html" id="footerBlog">blog</a> &middot; <a href="./privacy.html" id="footerPrivacy">privacy policy</a> &middot; <span id="footerPowered">powered by TMDB</span>
 </div>
 
 <script>
@@ -268,6 +299,85 @@ const IMG = 'https://image.tmdb.org/t/p';
 
 let results = [], minRating = 0, sortBy = 'default';
 let suggestTimer = null, selectedMovie = null, isDark = false;
+let lastAction = { type: 'trending' };
+
+// --- LANGUAGE ---
+const LANGS = [
+  { code:'en', label:'EN · English', tmdb:'en-US' },
+  { code:'es', label:'ES · Español', tmdb:'es-ES' },
+  { code:'fr', label:'FR · Français', tmdb:'fr-FR' },
+  { code:'de', label:'DE · Deutsch', tmdb:'de-DE' },
+  { code:'pt', label:'PT · Português', tmdb:'pt-BR' },
+];
+let currentLang = 'en';
+try { currentLang = localStorage.getItem('flickr_lang') || 'en'; } catch(e) {}
+
+const I18N = {
+  en: { all:'all', tagline:'free movie discovery · no piracy · just vibes', navSearch:'search', navBlog:'blog',
+    searchPlaceholder:'search any movie...', searchBtn:'Search', tabDiscover:'discover', watchlist:'watchlist',
+    allRatings:'all ratings', sortDefault:'default', sortRating:'top rated', sortYear:'newest',
+    trending:'trending this week', resultsFor:m=>`results for "${m}"`, searching:'searching...', loading:'loading...',
+    searchFailed:'search failed — check your connection', trendingFailed:'failed to load trending', genreFailed:'failed to load genre',
+    noResults:'no results — try a different search or genre', nothingSaved:'nothing saved yet',
+    director:'director', cast:'cast', whereToWatch:'where to watch', noProviders:'not available on major streaming platforms right now',
+    youMightLike:'you might also like', addWatchlist:'+ watchlist', saved:'✓ saved', close:'close', open:'▶ open', remove:'remove',
+    votes:'votes', flickrMeter:'flickr meter', footerBlog:'blog', footerPrivacy:'privacy policy', footerPowered:'powered by TMDB',
+    trailerBlocked:'Trailer blocked by your browser', watchYoutube:'▶ Watch on YouTube', openYoutube:'▶ Open on YouTube',
+    failedDetails:'failed to load movie details' },
+  es: { all:'todas', tagline:'descubre películas gratis · sin piratería · solo buen rollo', navSearch:'buscar', navBlog:'blog',
+    searchPlaceholder:'busca cualquier película...', searchBtn:'Buscar', tabDiscover:'descubrir', watchlist:'lista',
+    allRatings:'todas las notas', sortDefault:'por defecto', sortRating:'mejor valoradas', sortYear:'más recientes',
+    trending:'tendencias de la semana', resultsFor:m=>`resultados para "${m}"`, searching:'buscando...', loading:'cargando...',
+    searchFailed:'error en la búsqueda — revisa tu conexión', trendingFailed:'error al cargar tendencias', genreFailed:'error al cargar el género',
+    noResults:'sin resultados — prueba otra búsqueda o género', nothingSaved:'nada guardado todavía',
+    director:'director', cast:'reparto', whereToWatch:'dónde ver', noProviders:'no disponible en las principales plataformas ahora mismo',
+    youMightLike:'también te puede gustar', addWatchlist:'+ mi lista', saved:'✓ guardado', close:'cerrar', open:'▶ abrir', remove:'quitar',
+    votes:'votos', flickrMeter:'flickr meter', footerBlog:'blog', footerPrivacy:'política de privacidad', footerPowered:'con datos de TMDB',
+    trailerBlocked:'Tu navegador bloqueó el tráiler', watchYoutube:'▶ Ver en YouTube', openYoutube:'▶ Abrir en YouTube',
+    failedDetails:'no se pudo cargar la película' },
+  fr: { all:'tous', tagline:'découverte de films gratuite · zéro piratage · juste l’ambiance', navSearch:'recherche', navBlog:'blog',
+    searchPlaceholder:'cherchez un film...', searchBtn:'Rechercher', tabDiscover:'découvrir', watchlist:'liste',
+    allRatings:'toutes les notes', sortDefault:'par défaut', sortRating:'les mieux notés', sortYear:'les plus récents',
+    trending:'tendances de la semaine', resultsFor:m=>`résultats pour « ${m} »`, searching:'recherche...', loading:'chargement...',
+    searchFailed:'échec de la recherche — vérifiez votre connexion', trendingFailed:'échec du chargement des tendances', genreFailed:'échec du chargement du genre',
+    noResults:'aucun résultat — essayez une autre recherche ou un autre genre', nothingSaved:'rien d’enregistré pour l’instant',
+    director:'réalisateur', cast:'distribution', whereToWatch:'où regarder', noProviders:'indisponible sur les principales plateformes pour le moment',
+    youMightLike:'vous aimerez aussi', addWatchlist:'+ ma liste', saved:'✓ enregistré', close:'fermer', open:'▶ ouvrir', remove:'retirer',
+    votes:'votes', flickrMeter:'flickr meter', footerBlog:'blog', footerPrivacy:'confidentialité', footerPowered:'propulsé par TMDB',
+    trailerBlocked:'Bande-annonce bloquée par votre navigateur', watchYoutube:'▶ Voir sur YouTube', openYoutube:'▶ Ouvrir sur YouTube',
+    failedDetails:'échec du chargement du film' },
+  de: { all:'alle', tagline:'kostenlose Filmentdeckung · keine Piraterie · einfach Vibes', navSearch:'suche', navBlog:'blog',
+    searchPlaceholder:'Film suchen...', searchBtn:'Suchen', tabDiscover:'entdecken', watchlist:'merkliste',
+    allRatings:'alle bewertungen', sortDefault:'standard', sortRating:'am besten bewertet', sortYear:'neueste',
+    trending:'im trend diese woche', resultsFor:m=>`ergebnisse für „${m}"`, searching:'suche läuft...', loading:'lädt...',
+    searchFailed:'suche fehlgeschlagen — bitte verbindung prüfen', trendingFailed:'trends konnten nicht geladen werden', genreFailed:'genre konnte nicht geladen werden',
+    noResults:'keine ergebnisse — andere suche oder genre versuchen', nothingSaved:'noch nichts gespeichert',
+    director:'regie', cast:'besetzung', whereToWatch:'wo anschauen', noProviders:'derzeit auf keiner großen streaming-plattform verfügbar',
+    youMightLike:'das könnte dir auch gefallen', addWatchlist:'+ merkliste', saved:'✓ gespeichert', close:'schließen', open:'▶ öffnen', remove:'entfernen',
+    votes:'stimmen', flickrMeter:'flickr meter', footerBlog:'blog', footerPrivacy:'datenschutz', footerPowered:'powered by TMDB',
+    trailerBlocked:'Trailer von deinem Browser blockiert', watchYoutube:'▶ Auf YouTube ansehen', openYoutube:'▶ Auf YouTube öffnen',
+    failedDetails:'Film konnte nicht geladen werden' },
+  pt: { all:'todos', tagline:'descoberta de filmes grátis · sem pirataria · só vibe', navSearch:'buscar', navBlog:'blog',
+    searchPlaceholder:'busque qualquer filme...', searchBtn:'Buscar', tabDiscover:'descobrir', watchlist:'lista',
+    allRatings:'todas as notas', sortDefault:'padrão', sortRating:'mais bem avaliados', sortYear:'mais recentes',
+    trending:'em alta esta semana', resultsFor:m=>`resultados para "${m}"`, searching:'buscando...', loading:'carregando...',
+    searchFailed:'busca falhou — verifique sua conexão', trendingFailed:'falha ao carregar tendências', genreFailed:'falha ao carregar gênero',
+    noResults:'nenhum resultado — tente outra busca ou gênero', nothingSaved:'nada salvo ainda',
+    director:'diretor', cast:'elenco', whereToWatch:'onde assistir', noProviders:'não disponível nas principais plataformas no momento',
+    youMightLike:'você também pode gostar', addWatchlist:'+ minha lista', saved:'✓ salvo', close:'fechar', open:'▶ abrir', remove:'remover',
+    votes:'votos', flickrMeter:'flickr meter', footerBlog:'blog', footerPrivacy:'política de privacidade', footerPowered:'com dados do TMDB',
+    trailerBlocked:'Trailer bloqueado pelo seu navegador', watchYoutube:'▶ Assistir no YouTube', openYoutube:'▶ Abrir no YouTube',
+    failedDetails:'falha ao carregar o filme' },
+};
+
+function t(key, arg) {
+  const dict = I18N[currentLang] || I18N.en;
+  const val = dict[key] !== undefined ? dict[key] : I18N.en[key];
+  return typeof val === 'function' ? val(arg) : val;
+}
+function tmdbLang() {
+  return (LANGS.find(l => l.code === currentLang) || LANGS[0]).tmdb;
+}
 
 // Load watchlist from localStorage, fall back to empty array
 let watchlist = [];
@@ -284,6 +394,15 @@ const GENRES_MAP = {
 };
 const GENRE_IDS = Object.keys(GENRES_MAP);
 
+const GENRE_I18N = {
+  en: GENRES_MAP,
+  es: {28:'Acción',12:'Aventura',16:'Animación',35:'Comedia',80:'Crimen',18:'Drama',27:'Terror',10749:'Romance',878:'Ciencia ficción',53:'Suspenso',9648:'Misterio',10402:'Música',36:'Historia'},
+  fr: {28:'Action',12:'Aventure',16:'Animation',35:'Comédie',80:'Crime',18:'Drame',27:'Horreur',10749:'Romance',878:'Science-fiction',53:'Thriller',9648:'Mystère',10402:'Musique',36:'Histoire'},
+  de: {28:'Action',12:'Abenteuer',16:'Animation',35:'Komödie',80:'Krimi',18:'Drama',27:'Horror',10749:'Liebesfilm',878:'Science-Fiction',53:'Thriller',9648:'Mystery',10402:'Musik',36:'Historie'},
+  pt: {28:'Ação',12:'Aventura',16:'Animação',35:'Comédia',80:'Crime',18:'Drama',27:'Terror',10749:'Romance',878:'Ficção científica',53:'Suspense',9648:'Mistério',10402:'Música',36:'História'},
+};
+function genreName(id) { return (GENRE_I18N[currentLang] || GENRE_I18N.en)[id] || GENRES_MAP[id]; }
+
 const LOGO = `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
   <rect width="64" height="64" rx="10" fill="var(--surface)"/>
   <rect x="6" y="6" width="52" height="14" rx="2" fill="var(--accent)"/>
@@ -299,16 +418,22 @@ const LOGO = `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
 
 // Build genre pills
 const gc = document.getElementById('genres');
-const allBtn = document.createElement('button');
-allBtn.className = 'genre-btn active'; allBtn.textContent = 'all';
-allBtn.onclick = () => { setActiveGenre(null); loadTrending(); };
-gc.appendChild(allBtn);
-GENRE_IDS.forEach(id => {
-  const b = document.createElement('button');
-  b.className = 'genre-btn'; b.textContent = GENRES_MAP[id];
-  b.onclick = () => { setActiveGenre(id, b); browseGenre(id); };
-  gc.appendChild(b);
-});
+let allBtn;
+function buildGenrePills() {
+  gc.innerHTML = '';
+  allBtn = document.createElement('button');
+  allBtn.className = 'genre-btn active'; allBtn.textContent = t('all');
+  allBtn.onclick = () => { setActiveGenre(null); loadTrending(); };
+  gc.appendChild(allBtn);
+  GENRE_IDS.forEach(id => {
+    const b = document.createElement('button');
+    b.className = 'genre-btn'; b.textContent = genreName(id);
+    b.dataset.genreId = id;
+    b.onclick = () => { setActiveGenre(id, b); browseGenre(id); };
+    gc.appendChild(b);
+  });
+}
+buildGenrePills();
 
 function setActiveGenre(id, btn) {
   document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
@@ -318,7 +443,49 @@ function setActiveGenre(id, btn) {
 function toggleDark() {
   isDark = !isDark;
   document.body.classList.toggle('dark', isDark);
-  document.getElementById('darkBtn').textContent = isDark ? '☀️ light' : '🌙 dark';
+  const btn = document.getElementById('darkBtn');
+  btn.classList.toggle('is-dark', isDark);
+  btn.setAttribute('aria-pressed', String(isDark));
+}
+
+function initLanguage() {
+  const sel = document.getElementById('langSelect');
+  sel.innerHTML = LANGS.map(l => `<option value="${l.code}">${l.label}</option>`).join('');
+  sel.value = currentLang;
+  applyStaticTranslations();
+}
+
+function setLanguage(code) {
+  currentLang = code;
+  try { localStorage.setItem('flickr_lang', code); } catch(e) {}
+  applyStaticTranslations();
+  buildGenrePills();
+  // Re-run whatever was last shown, now in the new language, and change it back anytime
+  if (lastAction.type === 'search') doSearch(true);
+  else if (lastAction.type === 'genre') browseGenre(lastAction.id, true);
+  else loadTrending(true);
+  // Refresh an open movie modal in the new language too
+  if (selectedMovie && document.getElementById('modalOverlay').style.display === 'flex') {
+    openModal(selectedMovie.id);
+  }
+}
+
+function applyStaticTranslations() {
+  document.getElementById('tagline').textContent = t('tagline');
+  document.getElementById('navSearch').textContent = t('navSearch');
+  document.getElementById('navBlog').textContent = t('navBlog');
+  document.getElementById('searchInput').placeholder = t('searchPlaceholder');
+  document.getElementById('searchBtn').textContent = t('searchBtn');
+  document.getElementById('tabDiscover').textContent = t('tabDiscover');
+  document.getElementById('optAllRatings').textContent = t('allRatings');
+  document.getElementById('optSortDefault').textContent = t('sortDefault');
+  document.getElementById('optSortRating').textContent = t('sortRating');
+  document.getElementById('optSortYear').textContent = t('sortYear');
+  document.getElementById('footerBlog').textContent = t('footerBlog');
+  document.getElementById('footerPrivacy').textContent = t('footerPrivacy');
+  document.getElementById('footerPowered').textContent = t('footerPowered');
+  updateWLCount();
+  renderWatchlist();
 }
 
 // --- SEARCH ---
@@ -331,7 +498,7 @@ function handleInput(v) {
 
 async function fetchSuggestions(q) {
   try {
-    const r = await fetch(`${TMDB}/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}&page=1`);
+    const r = await fetch(`${TMDB}/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}&page=1&language=${tmdbLang()}`);
     const d = await r.json();
     if (!d.results?.length) return;
     const box = document.getElementById('suggestions');
@@ -351,44 +518,47 @@ function selectSug(id, title) {
   openModal(id);
 }
 
-async function doSearch() {
+async function doSearch(isRelang) {
   document.getElementById('suggestions').style.display = 'none';
   const q = document.getElementById('searchInput').value.trim();
   if (!q) { loadTrending(); return; }
-  setStatus('loader','searching...');
-  document.getElementById('sectionLabel').textContent = `results for "${q}"`;
+  lastAction = { type:'search', q };
+  setStatus('loader', t('searching'));
+  document.getElementById('sectionLabel').textContent = t('resultsFor', q);
   try {
-    const r = await fetch(`${TMDB}/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}&page=1`);
+    const r = await fetch(`${TMDB}/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}&page=1&language=${tmdbLang()}`);
     const d = await r.json();
     results = d.results || [];
     setStatus('','');
     renderResults();
-  } catch { setStatus('err','search failed — check your connection'); }
+  } catch { setStatus('err', t('searchFailed')); }
 }
 
-async function loadTrending() {
-  setStatus('loader','loading...');
-  document.getElementById('sectionLabel').textContent = 'trending this week';
-  document.getElementById('searchInput').value = '';
+async function loadTrending(isRelang) {
+  lastAction = { type:'trending' };
+  setStatus('loader', t('loading'));
+  document.getElementById('sectionLabel').textContent = t('trending');
+  if (!isRelang) document.getElementById('searchInput').value = '';
   try {
-    const r = await fetch(`${TMDB}/trending/movie/week?api_key=${TMDB_KEY}`);
+    const r = await fetch(`${TMDB}/trending/movie/week?api_key=${TMDB_KEY}&language=${tmdbLang()}`);
     const d = await r.json();
     results = d.results || [];
     setStatus('','');
     renderResults();
-  } catch { setStatus('err','failed to load trending'); }
+  } catch { setStatus('err', t('trendingFailed')); }
 }
 
-async function browseGenre(id) {
-  setStatus('loader','loading...');
-  document.getElementById('sectionLabel').textContent = GENRES_MAP[id];
+async function browseGenre(id, isRelang) {
+  lastAction = { type:'genre', id };
+  setStatus('loader', t('loading'));
+  document.getElementById('sectionLabel').textContent = genreName(id);
   try {
-    const r = await fetch(`${TMDB}/discover/movie?api_key=${TMDB_KEY}&with_genres=${id}&sort_by=popularity.desc&page=1`);
+    const r = await fetch(`${TMDB}/discover/movie?api_key=${TMDB_KEY}&with_genres=${id}&sort_by=popularity.desc&page=1&language=${tmdbLang()}`);
     const d = await r.json();
     results = d.results || [];
     setStatus('','');
     renderResults();
-  } catch { setStatus('err','failed to load genre'); }
+  } catch { setStatus('err', t('genreFailed')); }
 }
 
 function setStatus(type, msg) {
@@ -409,7 +579,7 @@ function renderResults() {
   const grid = document.getElementById('grid');
   const list = getSorted();
   if (!list.length) {
-    grid.innerHTML = `<div class="empty">${LOGO}<p>no results — try a different search or genre</p></div>`;
+    grid.innerHTML = `<div class="empty">${LOGO}<p>${t('noResults')}</p></div>`;
     return;
   }
   grid.innerHTML = list.map((m,i) => {
@@ -438,11 +608,11 @@ async function openModal(id) {
 
   try {
     const [detailRes, videosRes, creditsRes, providersRes, similarRes] = await Promise.all([
-      fetch(`${TMDB}/movie/${id}?api_key=${TMDB_KEY}`),
-      fetch(`${TMDB}/movie/${id}/videos?api_key=${TMDB_KEY}`),
-      fetch(`${TMDB}/movie/${id}/credits?api_key=${TMDB_KEY}`),
+      fetch(`${TMDB}/movie/${id}?api_key=${TMDB_KEY}&language=${tmdbLang()}`),
+      fetch(`${TMDB}/movie/${id}/videos?api_key=${TMDB_KEY}&language=${tmdbLang()}`),
+      fetch(`${TMDB}/movie/${id}/credits?api_key=${TMDB_KEY}&language=${tmdbLang()}`),
       fetch(`${TMDB}/movie/${id}/watch/providers?api_key=${TMDB_KEY}`),
-      fetch(`${TMDB}/movie/${id}/similar?api_key=${TMDB_KEY}&page=1`)
+      fetch(`${TMDB}/movie/${id}/similar?api_key=${TMDB_KEY}&page=1&language=${tmdbLang()}`)
     ]);
 
     const [m, videos, credits, providers, similar] = await Promise.all([
@@ -461,7 +631,7 @@ async function openModal(id) {
     // Cast (top 10)
     const cast = (credits.cast || []).slice(0, 10);
     const castHTML = cast.length ? `
-      <div class="modal-section">cast</div>
+      <div class="modal-section">${t('cast')}</div>
       <div class="cast-scroll">${cast.map(c => `
         <div class="cast-card">
           <img src="${c.profile_path ? IMG+'/w92'+c.profile_path : ''}" onerror="this.style.background='var(--surface)';this.removeAttribute('src')" />
@@ -491,7 +661,7 @@ async function openModal(id) {
       'Showmax': 'https://www.showmax.com/eng/search?q=',
     };
     const providersHTML = allProviders.length
-      ? `<div class="modal-section">where to watch</div>
+      ? `<div class="modal-section">${t('whereToWatch')}</div>
          <div class="providers-row">${allProviders.map(p => {
            const base = providerLinks[p.provider_name] || `https://www.justwatch.com/us/search?q=`;
            const href = base + encodeURIComponent(m.title);
@@ -501,13 +671,13 @@ async function openModal(id) {
            </a>`;
          }).join('')}
          </div>`
-      : `<div class="modal-section">where to watch</div>
-         <p class="no-providers" style="margin-bottom:13px">not available on major streaming platforms right now</p>`;
+      : `<div class="modal-section">${t('whereToWatch')}</div>
+         <p class="no-providers" style="margin-bottom:13px">${t('noProviders')}</p>`;
 
     // Similar
     const simMovies = (similar.results || []).slice(0,10).filter(s => s.poster_path);
     const similarHTML = simMovies.length ? `
-      <div class="modal-section">you might also like</div>
+      <div class="modal-section">${t('youMightLike')}</div>
       <div class="similar-scroll">${simMovies.map(s => `
         <div class="sim-card" onclick="openModal(${s.id})">
           <img src="${IMG}/w185${s.poster_path}" alt="${s.title}" />
@@ -524,6 +694,9 @@ async function openModal(id) {
 
     // Runtime
     const runtime = m.runtime ? `${Math.floor(m.runtime/60)}h ${m.runtime%60}m` : '';
+
+    // Flickr Meter — pie/donut chart of the rating
+    const meterHTML = buildFlickrMeter(m);
 
     document.getElementById('modal').innerHTML = `
       <div class="trailer-wrap" style="position:relative;">
@@ -542,10 +715,11 @@ async function openModal(id) {
         </div>
       </div>
       <div class="modal-body">
-        <div class="stars-row"><div class="stars">${stars}</div><span class="stars-sub">${m.vote_average?.toFixed(1)}/10 (${m.vote_count?.toLocaleString()} votes)</span></div>
+        ${meterHTML}
+        <div class="stars-row"><div class="stars">${stars}</div><span class="stars-sub">${m.vote_average?.toFixed(1)}/10 (${m.vote_count?.toLocaleString()} ${t('votes')})</span></div>
         <div class="genre-tags">${genres}</div>
         <p class="plot">${m.overview || 'No description available.'}</p>
-        ${director ? `<p class="meta-line"><strong>director</strong> <span>${director.name}</span></p>` : ''}
+        ${director ? `<p class="meta-line"><strong>${t('director')}</strong> <span>${director.name}</span></p>` : ''}
         ${castHTML}
         ${providersHTML}
         ${similarHTML}
@@ -553,14 +727,30 @@ async function openModal(id) {
           <ins class="adsbygoogle" style="display:block;width:100%;height:80px" data-ad-client="ca-pub-9070390501505190" data-ad-slot="0000000001" data-ad-format="horizontal"></ins>
         </div>
         <div class="modal-actions">
-          <button class="btn ${inWL?'btn-saved':'btn-primary'}" onclick="toggleWL()">${inWL?'✓ saved':'+ watchlist'}</button>
-          <button class="btn btn-secondary" onclick="closeModal()">close</button>
+          <button class="btn ${inWL?'btn-saved':'btn-primary'}" onclick="toggleWL()">${inWL?t('saved'):t('addWatchlist')}</button>
+          <button class="btn btn-secondary" onclick="closeModal()">${t('close')}</button>
         </div>
       </div>`;
     pushAd();
   } catch(e) {
-    document.getElementById('modal').innerHTML = `<div class="err" style="padding:2rem">failed to load movie details</div>`;
+    document.getElementById('modal').innerHTML = `<div class="err" style="padding:2rem">${t('failedDetails')}</div>`;
   }
+}
+
+function buildFlickrMeter(m) {
+  if (!m.vote_average) return '';
+  const pct = Math.round(m.vote_average * 10);
+  const color = pct >= 70 ? '#3ba55d' : (pct >= 40 ? 'var(--gold)' : 'var(--accent)');
+  return `
+    <div class="flickr-meter-row">
+      <div class="flickr-meter-donut" style="background:conic-gradient(${color} ${pct}%, var(--border) 0)">
+        <div class="flickr-meter-pct">${pct}%</div>
+      </div>
+      <div class="flickr-meter-info">
+        <div class="flickr-meter-label">${t('flickrMeter')}</div>
+        <div class="flickr-meter-votes">${m.vote_average.toFixed(1)}/10 · ${(m.vote_count||0).toLocaleString()} ${t('votes')}</div>
+      </div>
+    </div>`;
 }
 
 function loadTrailer(key) {
@@ -577,7 +767,7 @@ function loadTrailer(key) {
     <div id="trailerFallbackBtn" style="position:absolute;bottom:12px;right:12px;z-index:10;">
       <a href="https://www.youtube.com/watch?v=${key}" target="_blank" rel="noopener"
         style="background:rgba(0,0,0,0.75);color:#fff;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:5px;">
-        ▶ Open on YouTube
+        ${t('openYoutube')}
       </a>
     </div>`;
 }
@@ -587,10 +777,10 @@ function showTrailerFallback(wrap, key) {
   wrap.innerHTML = `
     <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0a0a;gap:14px;padding:1.5rem;">
       <svg width="52" height="52" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="32" fill="#e50914"/><polygon points="25,18 25,46 48,32" fill="#fff"/></svg>
-      <p style="color:#f0ece4;font-size:13.5px;font-weight:600;text-align:center;margin:0;">Trailer blocked by your browser</p>
+      <p style="color:#f0ece4;font-size:13.5px;font-weight:600;text-align:center;margin:0;">${t('trailerBlocked')}</p>
       <a href="${ytUrl}" target="_blank" rel="noopener"
         style="background:#e50914;color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;">
-        ▶ Watch on YouTube
+        ${t('watchYoutube')}
       </a>
     </div>`;
 }
@@ -613,13 +803,13 @@ function toggleWL() {
 }
 
 function updateWLCount() {
-  document.getElementById('wlTab').textContent = `watchlist (${watchlist.length})`;
+  document.getElementById('wlTab').textContent = `${t('watchlist')} (${watchlist.length})`;
 }
 
 function renderWatchlist() {
   const c = document.getElementById('wlContent');
   if (!watchlist.length) {
-    c.innerHTML = `<div class="empty">${LOGO}<p>nothing saved yet</p></div>`;
+    c.innerHTML = `<div class="empty">${LOGO}<p>${t('nothingSaved')}</p></div>`;
     return;
   }
   c.innerHTML = watchlist.map(m => `
@@ -630,8 +820,8 @@ function renderWatchlist() {
         <div class="wl-sub">${(m.release_date||'').slice(0,4)}${m.vote_average ? ' · ★ '+m.vote_average.toFixed(1) : ''}</div>
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0;">
-        <button class="btn btn-secondary" style="padding:5px 11px;font-size:12px;" onclick="openModal(${m.id})">▶ open</button>
-        <button class="wl-remove" onclick="removeWL(${m.id})">remove</button>
+        <button class="btn btn-secondary" style="padding:5px 11px;font-size:12px;" onclick="openModal(${m.id})">${t('open')}</button>
+        <button class="wl-remove" onclick="removeWL(${m.id})">${t('remove')}</button>
       </div>
     </div>`).join('');
 }
@@ -668,6 +858,7 @@ document.addEventListener('click', e => {
 });
 
 // Boot
+initLanguage();
 loadTrending();
 renderWatchlist();
 updateWLCount();
